@@ -1,0 +1,84 @@
+<app-header></app-header>
+
+<form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+    <mat-form-field class="example-full-width">
+      <mat-label>Name</mat-label>
+      <input matInput 
+      placeholder="Name" 
+      type="text"
+      formControlName="username">
+      <mat-error *ngIf="!userForm.get('username').valid">Please enter your name</mat-error>
+    </mat-form-field>
+  
+    <mat-form-field class="example-full-width">
+      <mat-label>Surname</mat-label>
+      <input matInput 
+      placeholder="Surname" 
+      type="text"
+      formControlName="surname">
+      <mat-error *ngIf="!userForm.get('surname').valid">Please enter your surname</mat-error>
+    </mat-form-field>
+  
+    <mat-form-field>
+      <mat-label>Choose a birthday</mat-label>
+      <input matInput 
+      [matDatepicker]="picker"
+      formControlName="birthday" 
+      max="2017-01-01">
+      <mat-error *ngIf="!userForm.get('birthday').valid">Please choose your birthday</mat-error>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  
+    <mat-form-field>
+      <mat-label>Choose framework</mat-label>
+      <mat-select formControlName="frameworkControl" (ngModelChange)="CheckFramework($event)">
+        <mat-option>--</mat-option>
+        <mat-option *ngFor="let framework of versions" [value]="framework.framework">{{framework.framework}}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="!userForm.get('frameworkControl').valid">Please choose the framework</mat-error>
+    </mat-form-field>
+
+    <mat-form-field *ngIf="userForm.get('frameworkControl').valid">
+      <mat-label>Choose version</mat-label>
+      <mat-select formControlName="frameworkVersion" >
+        <mat-option>--</mat-option>
+        <mat-option *ngFor="let versionEl of versionElems" 
+        [value]="versionEl">{{versionEl}}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="!userForm.get('frameworkVersion').valid">Please choose the version</mat-error>
+    </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Email</mat-label>
+        <input formControlName="email" matInput placeholder="email@test.com" type="email">
+        <mat-error 
+        *ngIf="!userForm.get('userForm.email')?.valid && userForm.get('userForm.email')?.touched"
+        >Please enter correct email</mat-error>
+        <mat-error 
+        *ngIf="!userForm.get('userForm.email')?.errors['emailIsForbidden']">This email already exists</mat-error>
+      </mat-form-field>
+    <!-- hobby -->
+      <label for="hobby">Hobby</label>
+      <div class="column" formArrayName="hobbies">
+        <mat-error *ngIf="!userForm.get('hobbies').valid">You should enter at least 1 hobby</mat-error>
+        <div class="form-group"  *ngFor="let hobbyControl of controls; let i = index;" [formGroupName]="i">
+          <mat-form-field class="example-full-width">
+            <mat-label>Hobby name</mat-label>
+            <input matInput 
+            placeholder="Hobby name"
+            type="text"
+            formControlName="name">
+          </mat-form-field>
+          <mat-form-field class="example-full-width">
+            <mat-label>Duration</mat-label>
+            <input  matInput
+            placeholder="Duration/time" 
+            type="text"
+            formControlName="duration">
+          </mat-form-field>
+        </div>
+      </div>
+      <button  mat-raised-button color="primary" type="button" (click)="onAddHobby()">Add one more hobby</button>
+    <button mat-raised-button color="accent" type="submit" [disabled]="!userForm.valid">Submit</button>
+</form>
